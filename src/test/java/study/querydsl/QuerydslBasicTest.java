@@ -1,8 +1,10 @@
 package study.querydsl;
 
+import com.querydsl.core.BooleanBuilder;
 import com.querydsl.core.Tuple;
 import com.querydsl.core.types.ExpressionUtils;
 import com.querydsl.core.types.Projections;
+import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.core.types.dsl.CaseBuilder;
 import com.querydsl.core.types.dsl.Expressions;
 import com.querydsl.jpa.JPAExpressions;
@@ -10,16 +12,15 @@ import com.querydsl.jpa.impl.JPAQueryFactory;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityManagerFactory;
 import jakarta.persistence.PersistenceUnit;
-import org.apache.catalina.User;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.transaction.annotation.Transactional;
-import study.querydsl.controller.domain.Member;
-import study.querydsl.controller.domain.QMember;
-import study.querydsl.controller.domain.Team;
+import study.querydsl.domain.Member;
+import study.querydsl.domain.QMember;
+import study.querydsl.domain.Team;
 import study.querydsl.dto.MemberDto;
 import study.querydsl.dto.QMemberDto;
 import study.querydsl.dto.UserDto;
@@ -28,8 +29,8 @@ import java.util.List;
 
 import static com.querydsl.jpa.JPAExpressions.*;
 import static org.assertj.core.api.Assertions.*;
-import static study.querydsl.controller.domain.QMember.*;
-import static study.querydsl.controller.domain.QTeam.*;
+import static study.querydsl.domain.QMember.*;
+import static study.querydsl.domain.QTeam.*;
 
 
 @SpringBootTest
@@ -574,6 +575,141 @@ public class QuerydslBasicTest {
             System.out.println("memberDto = " + memberDto);
         }
     }
+    @Test
+    public void dynamicQuery_BooleanBuilder(){
+        String usernameParam = "member1";
+        Integer ageParam = 10;
+
+        List<Member> result = searchMember1(usernameParam, ageParam);
+        assertThat(result.size()).isEqualTo(1);
+
+    }
+
+    private List<Member> searchMember1(String usernameCond, Integer ageCond) {
+
+        BooleanBuilder builder = new BooleanBuilder();
+        if(usernameCond != null){
+            builder.and(member.username.eq(usernameCond));
+        }
+        if (ageCond != null){
+            builder.and(member.age.eq(ageCond));
+        }
+        return queryFactory
+                .selectFrom(member)
+                .where(builder)
+                .fetch();
+    }
+    @Test
+    public void dynamicQuery_whereParam(){
+        String usernameParam = "member1";
+        Integer ageParam = 10;
+
+        List<Member> result = searchMember2(usernameParam, ageParam);
+        assertThat(result.size()).isEqualTo(1);
+
+    }
+
+    private List<Member> searchMember2(String usernameCond, Integer ageCond) {
+        return queryFactory
+                .selectFrom(member)
+                .where(allEq(usernameCond,ageCond))
+                .fetch();
+    }
+
+    private BooleanExpression ageEq(Integer ageCond) {
+        return ageCond != null ?  member.age.eq(ageCond):null;
+    }
+
+    private BooleanExpression usernameEq(String usernameCond) {
+        return usernameCond != null ? member.username.eq(usernameCond):null;
+    }
+
+    private BooleanExpression allEq(String usernameCond, Integer ageCond){
+        return usernameEq(usernameCond).and(ageEq(ageCond));
+    }
+
+    /**
+     *  member1,2 비회원
+     *  member3,4 유지
+     */
+
+    @Test
+    public void bulkUpdate(){
+        // member1 =  DB member1
+        // member2 =  DB member2
+        // member3 =  DB member3
+        // member4 =  DB member4
+
+
+        long count = queryFactory
+                .update(member)
+                .set(member.username, "비회원")
+                .where(member.age.lt(28))
+                .execute();
+
+        em.flush();
+        em.clear();
+        //벌크 연산을 실행후 영속성을 초기화 시켜준다.
+        // 영속성이랑 db를 맞춰준다.
+
+        // member1 =  DB 비회원
+        // member2 =  DB 비회원
+        // member3 =  DB member3
+        // member4 =  DB member4
+
+        // 영속성이 우선권을 가져서 db에서 가져온것은 버려버린다.
+
+        List<Member> result = queryFactory
+                .selectFrom(member)
+                .fetch();
+
+        for (Member member1 : result) {
+            System.out.println("member1 = " + member1);
+        }
+    }
+
+    @Test
+    public void bulkAdd(){
+        queryFactory
+                .update(member)
+                .set(member.age,member.age.add(1))
+                .execute();
+    }
+
+    @Test
+    public void bulkDelete(){
+        long count = queryFactory
+                .delete(member)
+                .where(member.age.gt(1))
+                .execute();
+    }
+
+    @Test
+    public void sqlFunction(){
+        List<String> result = queryFactory
+                .select(Expressions.stringTemplate("function('replace', {0},{1},{2})"
+                        , member.username, "member", "M"))
+                .from(member)
+                .fetch();
+
+        for (String string : result) {
+            System.out.println("string = " + string);
+        }
+    }
+
+    @Test
+    public void sqlFunction2(){
+        List<String> result = queryFactory
+                .select(member.username)
+                .from(member)
+//                .where(member.username.eq(
+//                        Expressions.stringTemplate("function('lower',{0})", member.username)))
+                .where(member.username.eq(member.username.lower()))
+                .fetch();
+
+        for (String string : result) {
+            System.out.println("string = " + string);
+        }
+
+    }
 }
-
-

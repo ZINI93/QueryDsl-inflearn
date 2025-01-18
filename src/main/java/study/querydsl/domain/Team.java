@@ -1,8 +1,7 @@
-package study.querydsl.controller.domain;
+package study.querydsl.domain;
 
 import jakarta.persistence.*;
 import lombok.*;
-import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
