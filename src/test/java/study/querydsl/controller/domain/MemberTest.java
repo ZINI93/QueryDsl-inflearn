@@ -10,6 +10,13 @@ import study.querydsl.domain.Team;
 
 import java.util.List;
 
+
+import javax.lang.model.SourceVersion;
+import java.security.spec.RSAOtherPrimeInfo;
+import java.util.List;
+
+import static org.junit.jupiter.api.Assertions.*;
+
 @SpringBootTest
 @Transactional
 class MemberTest {
