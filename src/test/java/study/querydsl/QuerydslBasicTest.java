@@ -1,5 +1,6 @@
 package study.querydsl;
 
+<<<<<<< HEAD
 import com.querydsl.core.BooleanBuilder;
 import com.querydsl.core.Tuple;
 import com.querydsl.core.types.ExpressionUtils;
@@ -12,12 +13,17 @@ import com.querydsl.jpa.impl.JPAQueryFactory;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityManagerFactory;
 import jakarta.persistence.PersistenceUnit;
+=======
+import com.querydsl.jpa.impl.JPAQueryFactory;
+import jakarta.persistence.EntityManager;
+>>>>>>> e5ec865c52526804de6b0681862a4c751c14de32
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.transaction.annotation.Transactional;
+<<<<<<< HEAD
 import study.querydsl.domain.Member;
 import study.querydsl.domain.QMember;
 import study.querydsl.domain.Team;
@@ -32,6 +38,14 @@ import static org.assertj.core.api.Assertions.*;
 import static study.querydsl.domain.QMember.*;
 import static study.querydsl.domain.QTeam.*;
 
+=======
+import study.querydsl.controller.domain.Member;
+import study.querydsl.controller.domain.QMember;
+import study.querydsl.controller.domain.Team;
+
+import static org.assertj.core.api.Assertions.*;
+import static study.querydsl.controller.domain.QMember.*;
+>>>>>>> e5ec865c52526804de6b0681862a4c751c14de32
 
 @SpringBootTest
 @Transactional
@@ -40,9 +54,14 @@ public class QuerydslBasicTest {
     @Autowired
     EntityManager em;
     JPAQueryFactory queryFactory;
+<<<<<<< HEAD
 
     @BeforeEach
     public void before() {
+=======
+    @BeforeEach
+    public void before(){
+>>>>>>> e5ec865c52526804de6b0681862a4c751c14de32
         queryFactory = new JPAQueryFactory(em);
 
 
@@ -65,11 +84,19 @@ public class QuerydslBasicTest {
     }
 
     @Test
+<<<<<<< HEAD
     public void startJPQL() {
         //member1을 찾아라
         Member findMember = em.createQuery(
                         "select m from Member m where " +
                                 "m.username =:username", Member.class)
+=======
+    public void startJPQL(){
+        //member1을 찾아라
+        Member findMember = em.createQuery(
+                "select m from Member m where " +
+                        "m.username =:username", Member.class)
+>>>>>>> e5ec865c52526804de6b0681862a4c751c14de32
                 .setParameter("username", "member1")
                 .getSingleResult();
 
@@ -78,7 +105,11 @@ public class QuerydslBasicTest {
 
 
     @Test
+<<<<<<< HEAD
     public void startQuerydsl() {
+=======
+    public void startQuerydsl(){
+>>>>>>> e5ec865c52526804de6b0681862a4c751c14de32
 
         Member findMember = queryFactory
                 .select(member)
@@ -91,7 +122,11 @@ public class QuerydslBasicTest {
     }
 
     @Test
+<<<<<<< HEAD
     public void search() {
+=======
+    public void search(){
+>>>>>>> e5ec865c52526804de6b0681862a4c751c14de32
         Member findMember = queryFactory
                 .selectFrom(member)
                 .where(member.username.eq("member1")
@@ -101,9 +136,14 @@ public class QuerydslBasicTest {
         Assertions.assertThat(findMember.getUsername()).isEqualTo("member1");
     }
 
+<<<<<<< HEAD
 
     @Test
     public void searchAndParam() {
+=======
+    @Test
+    public void searchAndParam(){
+>>>>>>> e5ec865c52526804de6b0681862a4c751c14de32
         Member findMember = queryFactory
                 .selectFrom(member)
                 .where(
@@ -114,6 +154,7 @@ public class QuerydslBasicTest {
 
         Assertions.assertThat(findMember.getUsername()).isEqualTo("member1");
     }
+<<<<<<< HEAD
 
     @Test
     public void resultFetchTest() {
@@ -712,4 +753,6 @@ public class QuerydslBasicTest {
         }
 
     }
+=======
+>>>>>>> e5ec865c52526804de6b0681862a4c751c14de32
 }

@@ -5,11 +5,21 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.transaction.annotation.Transactional;
+<<<<<<< HEAD
 import study.querydsl.domain.Member;
 import study.querydsl.domain.Team;
 
 import java.util.List;
 
+=======
+
+import javax.lang.model.SourceVersion;
+import java.security.spec.RSAOtherPrimeInfo;
+import java.util.List;
+
+import static org.junit.jupiter.api.Assertions.*;
+
+>>>>>>> e5ec865c52526804de6b0681862a4c751c14de32
 @SpringBootTest
 @Transactional
 class MemberTest {

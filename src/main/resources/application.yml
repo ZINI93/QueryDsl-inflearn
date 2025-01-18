@@ -1,6 +1,9 @@
 spring:
+<<<<<<< HEAD
   profiles:
     active: local
+=======
+>>>>>>> e5ec865c52526804de6b0681862a4c751c14de32
   datasource:
     url: jdbc:h2:tcp://localhost/~/test
     driver-class-name: org.h2.Driver
@@ -12,7 +15,11 @@ spring:
       path: /h2-console
   jpa:
     hibernate:
+<<<<<<< HEAD
       ddl-auto: update
+=======
+      ddl-auto: create-drop
+>>>>>>> e5ec865c52526804de6b0681862a4c751c14de32
     show-sql: true
     properties:
       hibernate:
